@@ -1,0 +1,575 @@
+<meta charset="utf-8">
+<title>Gradé Studio</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="Gradé — an image studio creating on-model campaigns for fashion, beauty and lifestyle brands.">
+<style>
+  :root{
+    --white:#FFFFFF; --ink:#141310; --soft:#4A4742; --muted:#928E86;
+    --line:#E8E5E0; --hair:#F0EEEA; --accent:#E8DCC8;
+    --d:"Cormorant Garamond",Georgia,"Times New Roman",serif;
+    --s:"Inter","Helvetica Neue",Arial,sans-serif;
+    --fs-label:10px; --fs-nav:11px; --fs-body:15px;
+    --fs-h1:clamp(46px,7vw,108px); --fs-h2:clamp(34px,5vw,74px); --fs-h3:clamp(22px,2.6vw,32px);
+    --ls:.16em; --gap:8px; --pad:clamp(20px,4.5vw,64px); --hdr:70px;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--white);color:var(--ink);font-family:var(--s);
+    font-size:var(--fs-body);line-height:1.6;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+  img{display:block;max-width:100%}
+  a{color:inherit;text-decoration:none}
+  button{font:inherit;color:inherit;background:none;border:0;padding:0;cursor:pointer}
+  input,textarea,select{font:inherit;color:inherit}
+  ::selection{background:var(--accent)}
+  h1,h2,h3,h4,p,ul,ol{margin:0;padding:0}
+  .wrap{max-width:1360px;margin-inline:auto;padding-inline:var(--pad)}
+  .d{font-family:var(--d);font-weight:300;letter-spacing:-.005em;line-height:1.03}
+  .lb{font-family:var(--s);font-size:var(--fs-label);text-transform:uppercase;letter-spacing:var(--ls);color:var(--muted)}
+  .nv{font-family:var(--s);font-size:var(--fs-nav);text-transform:uppercase;letter-spacing:.13em}
+  .muted{color:var(--muted)} .soft{color:var(--soft)}
+  .u{position:relative}
+  .u::after{content:"";position:absolute;left:0;right:0;bottom:-3px;height:1px;background:currentColor;
+    transform:scaleX(1);transform-origin:left;transition:transform .4s cubic-bezier(.4,0,.2,1)}
+  .u:hover::after{transform:scaleX(0);transform-origin:right}
+  .ln{display:inline-block;border:1px solid var(--ink);padding:16px 36px;font-family:var(--s);
+    font-size:var(--fs-label);text-transform:uppercase;letter-spacing:var(--ls);
+    transition:background .4s ease,color .4s ease}
+  .ln:hover{background:var(--ink);color:var(--white)}
+  html.js .rv{opacity:0;transform:translateY(16px)}
+  html.js .rv.in{opacity:1;transform:none;transition:opacity .9s ease,transform .9s cubic-bezier(.2,.7,.2,1)}
+  @media (prefers-reduced-motion:reduce){html.js .rv{opacity:1;transform:none}*{transition:none!important}}
+
+  /* image frame */
+  .im{position:relative;overflow:hidden;background:var(--hair)}
+  .im img{width:100%;height:100%;object-fit:cover;transition:transform 1.4s cubic-bezier(.2,.7,.2,1),opacity .8s ease}
+  .im img.b{position:absolute;inset:0;opacity:0}
+  a:hover .im img.a,.sw:hover .im img.a{transform:scale(1.035)}
+  a:hover .im img.b,.sw:hover .im img.b{opacity:1;transform:scale(1.035)}
+
+  /* header */
+  header{position:sticky;top:0;z-index:70;background:transparent;transition:background .4s ease,border-color .4s ease;
+    border-bottom:1px solid transparent}
+  header.solid{background:var(--white);border-bottom-color:var(--hair)}
+  .hdr{display:grid;grid-template-columns:1fr auto 1fr;align-items:center;height:var(--hdr);padding-inline:var(--pad);gap:18px}
+  .hdr-l{display:flex;gap:30px;align-items:center}
+  .hdr-r{display:flex;gap:26px;align-items:center;justify-self:end}
+  .wm{font-family:var(--d);font-weight:400;font-size:clamp(20px,2.2vw,26px);letter-spacing:.34em;
+    text-transform:uppercase;white-space:nowrap;padding-left:.34em}
+  .menu-btn{display:none}
+  @media(max-width:1040px){.hdr-l a,.hdr-r .dk{display:none}.menu-btn{display:inline-block}}
+
+  .mnav{position:fixed;inset:0;background:var(--white);z-index:90;display:none;flex-direction:column;padding:var(--pad)}
+  .mnav.open{display:flex}
+  .mnav-top{display:flex;justify-content:space-between;align-items:center;height:var(--hdr)}
+  .mnav a.big{font-family:var(--d);font-weight:300;font-size:clamp(32px,8vw,52px);padding-block:14px;border-bottom:1px solid var(--hair)}
+  .mnav-links{display:flex;flex-direction:column;margin-top:26px}
+
+  /* hero */
+  .hero{display:grid;grid-template-columns:1.02fr 1fr;min-height:100svh;align-items:stretch}
+  body.home .hero{margin-top:calc(-1 * var(--hdr))}
+  .hero-t{display:flex;flex-direction:column;justify-content:center;padding:calc(var(--hdr) + 60px) var(--pad) 70px;max-width:700px}
+  .hero-t h1{font-size:var(--fs-h1);margin-bottom:30px}
+  .hero-t h1 em{font-style:italic}
+  .hero-t p{font-size:clamp(15px,1.4vw,18px);color:var(--soft);max-width:40ch;margin-bottom:44px}
+  .hero-a{display:flex;gap:34px;align-items:center;flex-wrap:wrap}
+  .hero-i,.hero-i .im{height:100%}
+  .hero-i .im{min-height:460px}
+  @media(max-width:900px){.hero{grid-template-columns:1fr;min-height:0}.hero-i .im{min-height:64vh}
+    .hero-t{padding-top:calc(var(--hdr) + 40px);padding-bottom:54px}}
+
+  .creds{display:flex;flex-wrap:wrap;gap:8px 44px;justify-content:center;padding:26px var(--pad);
+    border-top:1px solid var(--hair);border-bottom:1px solid var(--hair)}
+
+  section.blk{padding-block:clamp(80px,11vw,170px)}
+  .hd{max-width:56ch;margin-bottom:clamp(40px,5vw,70px)}
+  .hd .eye{margin-bottom:22px}
+  .hd h2{font-size:var(--fs-h2)}
+  .hd h2 em{font-style:italic}
+  .hd p{color:var(--soft);margin-top:22px;max-width:50ch}
+
+  /* four-up */
+  .four{display:grid;grid-template-columns:repeat(4,1fr);gap:var(--gap)}
+  .four .im{aspect-ratio:4/5}
+  .four h3{font-family:var(--d);font-weight:400;font-size:21px;margin-top:16px}
+  .four p{font-size:14px;color:var(--muted);margin-top:5px;line-height:1.6}
+  @media(max-width:900px){.four{grid-template-columns:1fr 1fr}}
+
+  /* casting */
+  .cast{display:grid;grid-template-columns:1fr 1.15fr;gap:clamp(34px,7vw,100px);align-items:center}
+  .cast .trio{display:grid;grid-template-columns:repeat(3,1fr);gap:var(--gap)}
+  .cast .trio .im{aspect-ratio:3/4}
+  .cast .trio .cn{margin-top:10px}
+  @media(max-width:900px){.cast{grid-template-columns:1fr}}
+
+  /* process */
+  .proc{display:grid;grid-template-columns:repeat(4,1fr);gap:clamp(24px,3.4vw,52px)}
+  .proc .st{border-top:1px solid var(--ink);padding-top:22px}
+  .proc .n{margin-bottom:26px}
+  .proc h3{font-family:var(--d);font-weight:400;font-size:24px;margin-bottom:12px}
+  .proc p{font-size:14px;color:var(--muted);line-height:1.68}
+  @media(max-width:900px){.proc{grid-template-columns:1fr 1fr}}
+  @media(max-width:560px){.proc{grid-template-columns:1fr}}
+
+  /* engagements */
+  .eng{display:grid;grid-template-columns:repeat(3,1fr);gap:clamp(28px,4vw,64px)}
+  .eng .e{border-top:1px solid var(--ink);padding-top:26px;display:flex;flex-direction:column}
+  .eng h3{font-family:var(--d);font-weight:400;font-size:var(--fs-h3);margin-bottom:14px}
+  .eng .lead{color:var(--soft);font-size:15px;margin-bottom:20px}
+  .eng .typ{font-size:14px;color:var(--muted);margin-bottom:26px;line-height:1.7}
+  .eng .ft{margin-top:auto;display:flex;justify-content:space-between;align-items:baseline;gap:14px;
+    border-top:1px solid var(--hair);padding-top:18px}
+  @media(max-width:860px){.eng{grid-template-columns:1fr}}
+
+  /* details */
+  .det{max-width:900px;border-top:1px solid var(--line)}
+  .det details{border-bottom:1px solid var(--line)}
+  .det summary{list-style:none;cursor:pointer;padding:28px 44px 28px 0;position:relative;
+    font-family:var(--d);font-weight:400;font-size:var(--fs-h3)}
+  .det summary::-webkit-details-marker{display:none}
+  .det summary::after{content:"+";position:absolute;right:8px;top:50%;transform:translateY(-50%);
+    font-family:var(--s);font-size:14px;color:var(--muted)}
+  .det details[open] summary::after{content:"\2013"}
+  .det .a{padding:0 44px 30px 0;color:var(--soft);max-width:64ch}
+
+  /* page heads + grids */
+  .bhd{display:flex;justify-content:space-between;align-items:flex-end;gap:24px;flex-wrap:wrap;
+    padding:clamp(40px,7vw,90px) var(--pad) 26px;border-bottom:1px solid var(--hair)}
+  .bhd h1{font-size:var(--fs-h2)}
+  .grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:var(--gap);padding:26px var(--pad) clamp(70px,9vw,130px)}
+  .grid3 .im{aspect-ratio:3/4}
+  @media(max-width:900px){.grid3{grid-template-columns:1fr 1fr}}
+  @media(max-width:560px){.grid3{grid-template-columns:1fr}}
+
+  /* face page */
+  .face{display:grid;grid-template-columns:repeat(2,1fr);gap:var(--gap);padding:26px var(--pad) clamp(70px,9vw,130px)}
+  .face .im{aspect-ratio:3/4}
+  .face .im.tall{aspect-ratio:2/3}
+  @media(max-width:700px){.face{grid-template-columns:1fr}}
+
+  /* forms */
+  .fld{display:flex;flex-direction:column;gap:8px;margin-bottom:26px}
+  .fld label{font-family:var(--s);font-size:var(--fs-label);text-transform:uppercase;letter-spacing:var(--ls);color:var(--muted)}
+  .fld input,.fld textarea,.fld select{border:0;border-bottom:1px solid var(--line);background:transparent;padding:12px 0;font-size:15px}
+  .fld input:focus,.fld textarea:focus,.fld select:focus{outline:none;border-bottom-color:var(--ink)}
+  .fgrid{display:grid;grid-template-columns:1fr 1fr;gap:0 40px}
+  .fgrid .full{grid-column:1/-1}
+  .start{display:grid;grid-template-columns:1.3fr .8fr;gap:clamp(34px,7vw,110px);padding-bottom:clamp(70px,9vw,130px)}
+  .box{border-top:1px solid var(--ink);padding-top:24px}
+  @media(max-width:900px){.fgrid{grid-template-columns:1fr}.start{grid-template-columns:1fr}}
+
+  /* closing + footer */
+  .close{text-align:center;padding:clamp(90px,13vw,190px) var(--pad);border-top:1px solid var(--hair)}
+  .close h2{font-size:var(--fs-h2);margin-bottom:26px}
+  .close h2 em{font-style:italic}
+  .close p{color:var(--soft);max-width:44ch;margin:0 auto 44px}
+  footer{border-top:1px solid var(--hair);padding:clamp(56px,7vw,90px) var(--pad) 34px}
+  .foot{display:grid;grid-template-columns:2.2fr 1fr 1fr 1.5fr;gap:clamp(24px,4vw,60px)}
+  .foot h5{margin-bottom:18px}
+  .foot ul{list-style:none;display:flex;flex-direction:column;gap:11px}
+  .foot address{font-style:normal;color:var(--muted);line-height:1.9}
+  .news{display:flex;border-bottom:1px solid var(--ink);gap:10px;margin-top:12px}
+  .news input{flex:1;border:0;background:transparent;padding:10px 0}
+  .news input:focus{outline:none}
+  .fbot{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;margin-top:clamp(44px,7vw,80px);
+    padding-top:22px;border-top:1px solid var(--hair)}
+  @media(max-width:860px){.foot{grid-template-columns:1fr 1fr}}
+  @media(max-width:520px){.foot{grid-template-columns:1fr}}
+</style>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400&family=Inter:wght@400;500&display=swap">
+
+<header id="hdr">
+  <div class="hdr">
+    <div class="hdr-l">
+      <button class="nv menu-btn" id="menuBtn">Menu</button>
+      <a class="nv" href="#/work">Work</a>
+      <a class="nv" href="#/process">Process</a>
+      <a class="nv" href="#/engagements">Engagements</a>
+      <a class="nv" href="#/casting">Casting</a>
+    </div>
+    <a class="wm" href="#/">Grad&eacute;</a>
+    <div class="hdr-r"><a class="nv u dk" href="#/start">Enquire</a></div>
+  </div>
+</header>
+
+<div class="mnav" id="mnav">
+  <div class="mnav-top"><span class="wm">Grad&eacute;</span><button class="nv" id="mnavX">Close</button></div>
+  <nav class="mnav-links">
+    <a class="big" href="#/work">Work</a><a class="big" href="#/process">Process</a>
+    <a class="big" href="#/engagements">Engagements</a><a class="big" href="#/casting">Casting</a>
+    <a class="big" href="#/start">Enquire</a>
+  </nav>
+  <div style="margin-top:auto"><span class="lb">hello@grade.studio &nbsp;&middot;&nbsp; New York</span></div>
+</div>
+
+<main id="view"></main>
+
+<footer>
+  <div class="foot">
+    <div>
+      <div class="wm" style="margin-bottom:22px">Grad&eacute;</div>
+      <p class="soft" style="max-width:34ch;font-size:14px">An image studio creating on-model campaigns for fashion, beauty and lifestyle brands.</p>
+      <address class="lb" style="margin-top:20px">hello@grade.studio<br>New York</address>
+    </div>
+    <div><h5 class="lb">Studio</h5><ul class="lb">
+      <li><a class="u" href="#/work">Work</a></li><li><a class="u" href="#/process">Process</a></li>
+      <li><a class="u" href="#/engagements">Engagements</a></li><li><a class="u" href="#/casting">Casting</a></li></ul></div>
+    <div><h5 class="lb">Disciplines</h5><ul class="lb">
+      <li><a class="u" href="#/start">Apparel</a></li><li><a class="u" href="#/start">Jewellery</a></li>
+      <li><a class="u" href="#/start">Beauty</a></li><li><a class="u" href="#/start">Lifestyle</a></li></ul></div>
+    <div><h5 class="lb">Correspondence</h5>
+      <p style="font-size:13px;color:var(--muted)">Occasional notes on new work.</p>
+      <form class="news" id="newsForm"><input type="email" id="newsEmail" placeholder="Email address" aria-label="Email address" required>
+        <button type="submit" class="lb">Subscribe</button></form>
+      <p class="lb" id="newsMsg" style="margin-top:12px"></p></div>
+  </div>
+  <div class="fbot lb"><span>&copy; 2026 Grad&eacute;</span><span>New York</span></div>
+</footer>
+
+<script>
+document.documentElement.classList.add('js');
+
+/* ============================================================
+   IMAGERY — swap the file names to change any picture
+   ============================================================ */
+const IMG={
+  hero:'img_0.jpg',
+  apparel:'img_1.jpg', jewellery:'img_2.jpg', beauty:'img_3.jpg', lifestyle:'img_4.jpg',
+  faceA:'img_5.jpg', faceB:'img_6.jpg', faceC:'img_7.jpg'
+};
+
+/* Campaigns — each shot with one face, in one location, in one palette */
+const CAMPAIGNS=[
+  {slug:'maison-verde', client:'Maison Verde', year:'2026', disc:'Spring ready-to-wear',
+   note:'Four looks in a single room of winter light. One face, one palette, ivory throughout.',
+   shots:['ca_1.jpg','ca_2.jpg','ca_3.jpg','ca_4.jpg'], face:'01'},
+  {slug:'atelier-nord', client:'Atelier Nord', year:'2026', disc:'Knitwear',
+   note:'One bright room of cream plaster and linen. Four looks, one face, oatmeal throughout.',
+   shots:['cb_1.jpg','cb_2.jpg','cb_3.jpg','cb_4.jpg'], face:'02'},
+  {slug:'suisse-objet', client:'Suisse Objet', year:'2025', disc:'Fine jewellery',
+   note:'Gold against bare skin on a seamless beige ground, lit high and soft so the metal carries.',
+   shots:['cc_1.jpg','cc_2.jpg','cc_3.jpg','cc_4.jpg'], face:'03'}
+];
+const campBySlug=s=>CAMPAIGNS.find(c=>c.slug===s);
+
+/* Casting references — no names, by design */
+const FACES=[
+  {ref:'01', portrait:IMG.faceA, alt:'Casting reference 01',
+   suited:'Editorial · Outerwear · Resort',
+   looks:[{s:IMG.hero,t:true},{s:'ca_1.jpg'},{s:'ca_3.jpg'},{s:'ca_4.jpg'},{s:IMG.apparel}]},
+  {ref:'02', portrait:IMG.faceB, alt:'Casting reference 02',
+   suited:'Knitwear · Editorial · Lifestyle',
+   looks:[{s:'cb_1.jpg'},{s:'cb_2.jpg'},{s:'cb_3.jpg'},{s:'cb_4.jpg'}]},
+  {ref:'03', portrait:IMG.faceC, alt:'Casting reference 03',
+   suited:'Beauty · Skincare · Fine jewellery',
+   looks:[{s:IMG.beauty},{s:'cc_1.jpg'},{s:'cc_3.jpg'},{s:'cc_4.jpg'}]}
+];
+
+const CREDS=['Casting handled in-house','Art direction included','Full commercial rights','Delivered in days'];
+
+const DISCIPLINES=[
+ {t:'Apparel & Accessories',d:'Garments as they fall on the body — lookbook, product page and campaign.',i:IMG.apparel},
+ {t:'Jewellery & Watches',d:'Ear, neck and hand, at the scale and light fine pieces ask for.',i:IMG.jewellery},
+ {t:'Beauty & Skincare',d:'Texture, skin, and the product held in the hand.',i:IMG.beauty},
+ {t:'Home & Lifestyle',d:'Pieces set in a room with real light, rather than on a white square.',i:IMG.lifestyle}
+];
+
+const PROCESS=[
+ {n:'I',t:'The brief',d:'We learn the piece, the market and the mood. Your existing product images are usually enough to begin; a sample is welcome when material and drape matter.'},
+ {n:'II',t:'Casting & direction',d:'We choose the face and build the palette, set and styling around your brand. You are welcome to weigh in, and equally welcome to leave it with us.'},
+ {n:'III',t:'Production',d:'The campaign is produced and retouched in studio. You see the first frames before anything is finished.'},
+ {n:'IV',t:'Delivery',d:'Final imagery within five to seven days, cropped for product pages, paid social and print. Sooner when a date demands it.'}
+];
+
+const ENGAGEMENTS=[
+ {n:'Essential',lead:'A single piece, given a proper campaign.',typ:'One face, one direction. Suited to a launch, a hero product, or a first look at working together. Typically eight finished images.'},
+ {n:'Studio',lead:'A collection, treated as one.',typ:'Several faces and settings, with every piece in the range held to the same light and language. Typically twenty-four finished images.'},
+ {n:'Campaign',lead:'A season, art-directed.',typ:'Full creative direction across the collection, unlimited looks, priority delivery and a dedicated producer.'}
+];
+
+const DETAILS=[
+ ['Do you need the physical product?','Not usually. Your own product images are enough to begin. For knitwear, tailoring and fine jewellery, a sample lets us be exact about drape, scale and material.'],
+ ['How long does it take?','Five to seven days from an approved brief. Sooner when a date demands it — tell us when you write.'],
+ ['What do we receive?','Retouched imagery at full resolution, with crops prepared for product pages, paid social and print.'],
+ ['Who owns the imagery?','You do. Every engagement includes full commercial rights to the work we deliver.'],
+ ['Can we extend it later?','Yes, and most brands do. Once a direction exists, new colourways, crops and angles do not mean beginning again.']
+];
+
+/* ============================================================ */
+
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const im=(src,alt,ar,second)=>`<div class="im"${ar?` style="aspect-ratio:${ar}"`:''}>
+  <img class="a" src="${src}" alt="${esc(alt)}" loading="lazy">
+  ${second?`<img class="b" src="${second}" alt="" aria-hidden="true" loading="lazy">`:''}</div>`;
+
+const procHTML=()=>`<div class="proc">${PROCESS.map(s=>
+  `<div class="st rv"><div class="n lb">${s.n}</div><h3>${esc(s.t)}</h3><p>${esc(s.d)}</p></div>`).join('')}</div>`;
+const engHTML=()=>`<div class="eng">${ENGAGEMENTS.map(e=>
+  `<div class="e rv"><h3>${esc(e.n)}</h3><p class="lead">${esc(e.lead)}</p><p class="typ">${esc(e.typ)}</p>
+    <div class="ft"><span class="lb">By enquiry</span><a class="nv u" href="#/start">Enquire</a></div></div>`).join('')}</div>`;
+const detHTML=()=>`<div class="det">${DETAILS.map(d=>
+  `<details><summary>${esc(d[0])}</summary><div class="a">${esc(d[1])}</div></details>`).join('')}</div>`;
+
+/* ---------- views ---------- */
+function homeView(){
+  return `
+  <section class="hero">
+    <div class="hero-t">
+      <p class="lb rv" style="margin-bottom:26px">Image studio &nbsp;&middot;&nbsp; New York</p>
+      <h1 class="d">The imagery your product <em>deserves.</em></h1>
+      <p>Gradé creates on-model campaigns for fashion, beauty and lifestyle brands. Casting, styling and art direction, handled end to end.</p>
+      <div class="hero-a"><a class="ln" href="#/start">Begin a project</a><a class="nv u" href="#/work">View the work</a></div>
+    </div>
+    <div class="hero-i sw">${im(IMG.hero,'Editorial campaign, ivory tailoring')}</div>
+  </section>
+
+  <div class="creds">${CREDS.map(c=>`<span class="lb">${esc(c)}</span>`).join('')}</div>
+
+  <section class="blk wrap">
+    <div class="hd rv"><p class="eye lb">Disciplines</p>
+      <h2 class="d">Made for brands with something <em>worth showing.</em></h2></div>
+    <div class="four">${DISCIPLINES.map(c=>
+      `<a class="sw rv" href="#/start">${im(c.i,c.t,'4/5')}<h3>${esc(c.t)}</h3><p>${esc(c.d)}</p></a>`).join('')}</div>
+  </section>
+
+  <section class="blk wrap" style="border-top:1px solid var(--hair)">
+    <div class="cast">
+      <div class="rv">
+        <p class="eye lb" style="margin-bottom:22px">Casting</p>
+        <h2 class="d" style="font-size:var(--fs-h2)">Casting is <em>ours</em> to get right.</h2>
+        <p class="soft" style="margin-top:24px;max-width:44ch">The face carries the brand. We cast to suit your market, your palette and the way you want to be read — and we do it before it ever becomes your decision.</p>
+        <p class="soft" style="margin-top:16px;max-width:44ch">If you would like a say, the casting is open to you.</p>
+        <p style="margin-top:32px"><a class="nv u" href="#/casting">View casting</a></p>
+      </div>
+      <div class="trio rv">${FACES.map(f=>
+        `<a class="sw" href="#/casting/${f.ref}">${im(f.portrait,f.alt,'3/4',f.looks[0].s)}
+          <div class="cn lb">${esc(f.suited.split(' · ')[0])}</div></a>`).join('')}</div>
+    </div>
+  </section>
+
+  <section class="blk wrap" style="border-top:1px solid var(--hair)">
+    <div class="hd rv"><p class="eye lb">The process</p><h2 class="d">Considered, and <em>quick.</em></h2></div>
+    ${procHTML()}
+  </section>
+
+  <section class="blk wrap" style="border-top:1px solid var(--hair)">
+    <div class="hd rv" style="display:flex;justify-content:space-between;align-items:flex-end;max-width:none;gap:24px;flex-wrap:wrap">
+      <div><p class="eye lb">Selected work</p><h2 class="d">Recent <em>campaigns.</em></h2></div>
+      <a class="nv u" href="#/work">All work</a></div>
+    <div class="grid3" style="padding:0">${CAMPAIGNS.map(c=>
+      `<a class="sw rv" href="#/work/${c.slug}">${im(c.shots[0],c.client+' — '+c.disc,'3/4',c.shots[2])}
+        <div style="display:flex;justify-content:space-between;align-items:baseline;gap:10px;margin-top:12px">
+          <span class="d" style="font-size:20px">${esc(c.client)}</span><span class="lb">${c.year}</span></div>
+        <p class="lb" style="margin-top:2px">${esc(c.disc)} &nbsp;&middot;&nbsp; ${c.shots.length} looks</p></a>`).join('')}</div>
+  </section>
+
+  <section class="blk wrap" style="border-top:1px solid var(--hair)">
+    <div class="hd rv"><p class="eye lb">Engagements</p><h2 class="d">Scaled to your <em>collection.</em></h2>
+      <p>Each engagement is quoted to the work in front of it, so a house with four pieces never subsidises one with forty.</p></div>
+    ${engHTML()}
+  </section>
+
+  <section class="blk wrap" style="border-top:1px solid var(--hair)">
+    <div class="hd rv"><p class="eye lb">Details</p><h2 class="d">Good to <em>know.</em></h2></div>
+    ${detHTML()}
+  </section>
+
+  <section class="close">
+    <h2 class="d">Tell us what you <em>make.</em></h2>
+    <p>We will come back within a day with a direction and a quote.</p>
+    <a class="ln" href="#/start">Begin a project</a>
+  </section>`;
+}
+
+function processView(){
+  return `<div class="bhd"><h1 class="d">Process</h1><span class="lb">Five to seven days</span></div>
+  <section class="blk wrap">
+    <div class="hd rv"><p class="eye lb">End to end</p>
+      <h2 class="d">Everything that normally makes imagery <em>slow.</em></h2>
+      <p>You never coordinate a studio, a crew or a calendar. You tell us about the piece, and we return a finished campaign.</p></div>
+    ${procHTML()}
+  </section>
+  <section class="blk wrap" style="border-top:1px solid var(--hair)">
+    <div class="hd rv"><p class="eye lb">Details</p><h2 class="d">Good to <em>know.</em></h2></div>${detHTML()}
+  </section>
+  <section class="close"><h2 class="d">Begin whenever you're <em>ready.</em></h2>
+    <p>A short brief is enough to start.</p><a class="ln" href="#/start">Begin a project</a></section>`;
+}
+
+function engView(){
+  return `<div class="bhd"><h1 class="d">Engagements</h1><span class="lb">Quoted to the work</span></div>
+  <section class="blk wrap">
+    <div class="hd rv"><p class="eye lb">Scale</p>
+      <h2 class="d">We charge for the work, not the <em>day.</em></h2>
+      <p>A traditional shoot bills a day rate whether you have four pieces or forty. We quote to the collection in front of us, and come back within one working day.</p></div>
+    ${engHTML()}
+  </section>
+  <section class="blk wrap" style="border-top:1px solid var(--hair)">
+    <div class="hd rv"><p class="eye lb">Details</p><h2 class="d">Good to <em>know.</em></h2></div>${detHTML()}
+  </section>`;
+}
+
+function workView(){
+  return `<div class="bhd"><h1 class="d">Work</h1><span class="lb">${CAMPAIGNS.length} campaigns</span></div>
+  <div class="grid3">
+    ${CAMPAIGNS.map(c=>`<a class="sw rv" href="#/work/${c.slug}">${im(c.shots[0],c.client+' — '+c.disc,'3/4',c.shots[2])}
+      <div style="display:flex;justify-content:space-between;align-items:baseline;gap:10px;margin-top:12px">
+        <span class="d" style="font-size:20px">${esc(c.client)}</span><span class="lb">${c.year}</span></div>
+      <p class="lb" style="margin-top:2px">${esc(c.disc)} &nbsp;&middot;&nbsp; ${c.shots.length} looks</p></a>`).join('')}
+  </div>
+  <section class="close"><h2 class="d">Your house could be <em>next.</em></h2>
+    <p>Tell us what you make and we will show you what it could become.</p>
+    <a class="ln" href="#/start">Begin a project</a></section>`;
+}
+
+function campaignView(slug){
+  const c=campBySlug(slug);
+  if(!c) return `<div class="bhd"><h1 class="d">Not found</h1></div>`;
+  const i=CAMPAIGNS.indexOf(c), next=CAMPAIGNS[(i+1)%CAMPAIGNS.length];
+  return `<div class="wrap" style="padding-top:34px"><a class="nv u" href="#/work">&larr; Work</a></div>
+  <div class="bhd" style="padding-top:26px">
+    <div><p class="lb" style="margin-bottom:14px">${esc(c.disc)} &nbsp;&middot;&nbsp; ${c.year}</p>
+      <h1 class="d">${esc(c.client)}</h1></div>
+    <p class="soft" style="max-width:40ch;font-size:14px">${esc(c.note)}</p></div>
+  <div class="face">
+    ${c.shots.map((s,n)=>`<div class="sw rv"><div class="im" style="aspect-ratio:3/4">
+      <img class="a" src="${s}" alt="${esc(c.client)} look ${n+1}" loading="lazy"></div>
+      <p class="lb" style="margin-top:10px">Look ${String(n+1).padStart(2,'0')}</p></div>`).join('')}
+  </div>
+  <div class="wrap" style="display:flex;justify-content:space-between;gap:20px;flex-wrap:wrap;
+       border-top:1px solid var(--hair);padding-top:26px">
+    <span class="lb">Cast from reference ${c.face}</span>
+    <a class="nv u" href="#/work/${next.slug}">Next campaign &mdash; ${esc(next.client)} &rarr;</a></div>
+  <section class="close"><h2 class="d">Shall we make <em>yours?</em></h2>
+    <p>A short brief is enough to begin.</p><a class="ln" href="#/start">Begin a project</a></section>`;
+}
+
+function castingView(){
+  return `<div class="bhd">
+    <div><p class="lb" style="margin-bottom:14px">Casting is ours to handle &mdash; look if you like</p>
+      <h1 class="d">Casting</h1></div>
+    <span class="lb">${FACES.length} faces on rotation</span></div>
+  <div class="grid3">
+    ${FACES.map(f=>`<a class="sw rv" href="#/casting/${f.ref}">${im(f.portrait,f.alt,'3/4',f.looks[0].s)}
+      <div style="display:flex;justify-content:space-between;align-items:baseline;gap:10px;margin-top:12px">
+        <span class="d" style="font-size:20px">Reference ${f.ref}</span><span class="lb">${f.looks.length} looks</span></div>
+      <p class="lb" style="margin-top:2px">${esc(f.suited)}</p></a>`).join('')}
+  </div>
+  <section class="close"><h2 class="d">Or leave the casting <em>to us.</em></h2>
+    <p>Tell us about the brand and we will propose the face.</p>
+    <a class="ln" href="#/start">Begin a project</a></section>`;
+}
+
+function faceView(ref){
+  const f=FACES.find(x=>x.ref===ref);
+  if(!f) return `<div class="bhd"><h1 class="d">Not found</h1></div>`;
+  return `<div class="wrap" style="padding-top:34px"><a class="nv u" href="#/casting">&larr; Casting</a></div>
+  <div class="bhd" style="padding-top:26px">
+    <div><p class="lb" style="margin-bottom:14px">${esc(f.suited)}</p><h1 class="d">Reference ${f.ref}</h1></div>
+    <a class="ln" href="#/start">Begin a project</a></div>
+  <div class="face">
+    ${f.looks.map(l=>`<div class="sw rv"><div class="im${l.t?' tall':''}" style="aspect-ratio:${l.t?'2/3':'3/4'}">
+      <img class="a" src="${l.s}" alt="Campaign look" loading="lazy"></div></div>`).join('')}
+  </div>
+  <section class="close"><h2 class="d">Shall we begin with <em>this face?</em></h2>
+    <p>Mention Reference ${f.ref} in your brief, or leave the casting with us.</p>
+    <a class="ln" href="#/start">Begin a project</a></section>`;
+}
+
+function startView(){
+  return `<div class="bhd"><h1 class="d">Begin a project</h1><span class="lb">A reply within one working day</span></div>
+  <section class="blk wrap start">
+    <div>
+      <div class="hd rv" style="margin-bottom:44px;max-width:44ch">
+        <h2 class="d" style="font-size:clamp(28px,3.4vw,46px)">Tell us what you <em>make.</em></h2>
+        <p>A few lines are enough. We will come back with a direction and a quote.</p></div>
+      <form id="briefForm">
+        <div class="fgrid">
+          <div class="fld"><label for="b1">Your name</label><input id="b1" required></div>
+          <div class="fld"><label for="b2">House or brand</label><input id="b2" required></div>
+          <div class="fld"><label for="b3">Email</label><input id="b3" type="email" required></div>
+          <div class="fld"><label for="b4">Website or Instagram</label><input id="b4"></div>
+          <div class="fld"><label for="b5">Discipline</label>
+            <select id="b5">${DISCIPLINES.map(d=>`<option>${esc(d.t)}</option>`).join('')}<option>Something else</option></select></div>
+          <div class="fld"><label for="b6">Engagement</label>
+            <select id="b6"><option>Not yet decided</option>${ENGAGEMENTS.map(e=>`<option>${esc(e.n)}</option>`).join('')}</select></div>
+          <div class="fld full"><label for="b7">The pieces</label><input id="b7" placeholder="Six styles, two colourways each"></div>
+          <div class="fld full"><label for="b8">Anything else</label>
+            <textarea id="b8" rows="5" placeholder="The mood you have in mind, where the imagery will live, any date you are working to."></textarea></div>
+        </div>
+        <button class="ln" type="submit" style="width:100%;margin-top:14px">Send</button>
+        <p style="margin-top:18px;font-size:13px;color:var(--muted)">
+          Your own product images are enough to begin. If a sample would serve the piece better, we will arrange it after the brief.</p>
+      </form>
+    </div>
+    <aside>
+      <div class="box rv">
+        <h4 class="lb" style="margin-bottom:18px">Casting</h4>
+        <p class="soft" style="font-size:14px">Leave it with us — we will propose the face that suits the brand. If you would rather choose, <a class="u" href="#/casting">view the casting</a> and mention a reference above.</p>
+      </div>
+      <div class="box rv" style="margin-top:40px">
+        <h4 class="lb" style="margin-bottom:18px">What follows</h4>
+        <ol style="padding-left:18px;line-height:2.4;font-size:13px;color:var(--muted)">
+          <li>We read the brief</li><li>A direction and a quote</li>
+          <li>Casting and production</li><li>Imagery in five to seven days</li></ol>
+      </div>
+    </aside>
+  </section>`;
+}
+
+/* ---------- router ---------- */
+function parseHash(){const raw=location.hash.replace(/^#\/?/,'');return {parts:raw.split('?')[0].split('/').filter(Boolean)}}
+function renderRoute(){
+  const {parts}=parseHash(),v=document.getElementById('view');
+  if(parts[0]==='casting') v.innerHTML=parts[1]?faceView(parts[1]):castingView();
+  else if(parts[0]==='engagements') v.innerHTML=engView();
+  else if(parts[0]==='process') v.innerHTML=processView();
+  else if(parts[0]==='work') v.innerHTML=parts[1]?campaignView(parts[1]):workView();
+  else if(parts[0]==='start') v.innerHTML=startView();
+  else v.innerHTML=homeView();
+  document.body.classList.toggle('home',parts.length===0);
+  onScroll(); observe();
+}
+function route(){closeAll();renderRoute();window.scrollTo(0,0)}
+
+let io;
+function observe(){
+  const els=document.querySelectorAll('.rv:not(.in)');
+  if(!('IntersectionObserver' in window)){els.forEach(e=>e.classList.add('in'));return}
+  io=io||new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('in');io.unobserve(e.target)}}),{rootMargin:'0px 0px -6% 0px'});
+  els.forEach(e=>io.observe(e));
+  setTimeout(()=>document.querySelectorAll('.rv:not(.in)').forEach(e=>{
+    if(e.getBoundingClientRect().top<innerHeight)e.classList.add('in')}),1000);
+}
+function onScroll(){
+  const home=parseHash().parts.length===0;
+  document.getElementById('hdr').classList.toggle('solid',!home||scrollY>40);
+}
+function closeAll(){
+  document.getElementById('mnav').classList.remove('open');
+  document.body.style.overflow='';
+}
+
+addEventListener('hashchange',route);
+addEventListener('scroll',onScroll,{passive:true});
+document.getElementById('menuBtn').onclick=()=>{document.getElementById('mnav').classList.add('open');document.body.style.overflow='hidden'};
+document.getElementById('mnavX').onclick=closeAll;
+document.getElementById('mnav').addEventListener('click',e=>{if(e.target.tagName==='A')closeAll()});
+
+document.addEventListener('submit',e=>{
+  if(e.target.id==='briefForm'){
+    e.preventDefault();
+    e.target.innerHTML=`<div style="border-top:1px solid var(--ink);padding-top:26px">
+      <h3 class="d" style="font-size:28px;margin-bottom:12px">Received, with thanks.</h3>
+      <p class="soft" style="font-size:14px;max-width:44ch">We will write within one working day with a direction and a quote.</p></div>`;
+  }
+  if(e.target.id==='newsForm'){
+    e.preventDefault();
+    document.getElementById('newsMsg').textContent='Thank you.';
+    document.getElementById('newsEmail').value='';
+  }
+});
+addEventListener('keydown',e=>{if(e.key==='Escape')closeAll()});
+
+renderRoute();
+</script>
