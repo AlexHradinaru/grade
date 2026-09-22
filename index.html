@@ -24,6 +24,8 @@
   .wrap{max-width:1360px;margin-inline:auto;padding-inline:var(--pad)}
   .d{font-family:var(--d);font-weight:300;letter-spacing:-.005em;line-height:1.03}
   .lb{font-family:var(--s);font-size:var(--fs-label);text-transform:uppercase;letter-spacing:var(--ls);color:var(--muted)}
+  .tag{display:inline-block;border:1px solid var(--line);padding:3px 8px;font-family:var(--s);
+    font-size:9px;text-transform:uppercase;letter-spacing:.14em;color:var(--muted);vertical-align:middle}
   .nv{font-family:var(--s);font-size:var(--fs-nav);text-transform:uppercase;letter-spacing:.13em}
   .muted{color:var(--muted)} .soft{color:var(--soft)}
   .u{position:relative}
@@ -223,7 +225,10 @@
         <button type="submit" class="lb">Subscribe</button></form>
       <p class="lb" id="newsMsg" style="margin-top:12px"></p></div>
   </div>
-  <div class="fbot lb"><span>&copy; 2026 Grad&eacute;</span><span>New York</span></div>
+  <div class="fbot lb"><span>&copy; 2026 Grad&eacute;</span>
+    <span style="max-width:58ch;text-align:right;text-transform:none;letter-spacing:0;font-size:11px">
+      Campaigns marked Concept are self-initiated work made to demonstrate the studio&rsquo;s range.
+      Grad&eacute; is not affiliated with, authorised by or endorsed by any brand shown.</span></div>
 </footer>
 
 <script>
@@ -240,16 +245,16 @@ const IMG={
 
 /* Campaigns — each shot with one face, in one location, in one palette */
 const CAMPAIGNS=[
-  {slug:'maison-verde', client:'Maison Verde', year:'2026', disc:'Spring ready-to-wear',
+  {slug:'maison-verde', concept:true, client:'Maison Verde', year:'2026', disc:'Spring ready-to-wear',
    note:'Four looks in a single room of winter light. One face, one palette, ivory throughout.',
    shots:['ca_1.jpg','ca_2.jpg','ca_3.jpg','ca_4.jpg'], face:'01'},
-  {slug:'atelier-nord', client:'Atelier Nord', year:'2026', disc:'Knitwear',
+  {slug:'atelier-nord', concept:true, client:'Atelier Nord', year:'2026', disc:'Knitwear',
    note:'One bright room of cream plaster and linen. Four looks, one face, oatmeal throughout.',
    shots:['cb_1.jpg','cb_2.jpg','cb_3.jpg','cb_4.jpg'], face:'02'},
-  {slug:'rose-study', client:'Rose Study', year:'2026', disc:'Beauty & skincare',
+  {slug:'laneige', client:'Laneige', year:'2026', disc:'Beauty & skincare', concept:true,
    note:'A monochrome study in rose — one face, one light, one colour from the wall to the knit.',
    shots:['ln_1.jpg','ln_2.jpg','ln_3.jpg','ln_4.jpg'], face:'02'},
-  {slug:'suisse-objet', client:'Suisse Objet', year:'2025', disc:'Fine jewellery',
+  {slug:'suisse-objet', concept:true, client:'Suisse Objet', year:'2025', disc:'Fine jewellery',
    note:'Gold on cream silk against a seamless warm ground, lit high and bright so the metal carries.',
    shots:['cc_1.jpg','cc_2.jpg','cc_3.jpg','cc_4.jpg'], face:'03'}
 ];
@@ -362,7 +367,7 @@ function homeView(){
     <div class="grid3" style="padding:0">${CAMPAIGNS.map(c=>
       `<a class="sw rv" href="#/work/${c.slug}">${im(c.shots[0],c.client+' — '+c.disc,'3/4',c.shots[2])}
         <div style="display:flex;justify-content:space-between;align-items:baseline;gap:10px;margin-top:12px">
-          <span class="d" style="font-size:20px">${esc(c.client)}</span><span class="lb">${c.year}</span></div>
+          <span class="d" style="font-size:20px">${esc(c.client)}${c.concept?' <span class="tag">Concept</span>':''}</span><span class="lb">${c.year}</span></div>
         <p class="lb" style="margin-top:2px">${esc(c.disc)} &nbsp;&middot;&nbsp; ${c.shots.length} looks</p></a>`).join('')}</div>
   </section>
 
@@ -417,7 +422,7 @@ function workView(){
   <div class="grid3">
     ${CAMPAIGNS.map(c=>`<a class="sw rv" href="#/work/${c.slug}">${im(c.shots[0],c.client+' — '+c.disc,'3/4',c.shots[2])}
       <div style="display:flex;justify-content:space-between;align-items:baseline;gap:10px;margin-top:12px">
-        <span class="d" style="font-size:20px">${esc(c.client)}</span><span class="lb">${c.year}</span></div>
+        <span class="d" style="font-size:20px">${esc(c.client)}${c.concept?' <span class="tag">Concept</span>':''}</span><span class="lb">${c.year}</span></div>
       <p class="lb" style="margin-top:2px">${esc(c.disc)} &nbsp;&middot;&nbsp; ${c.shots.length} looks</p></a>`).join('')}
   </div>
   <section class="close"><h2 class="d">Your house could be <em>next.</em></h2>
@@ -431,7 +436,7 @@ function campaignView(slug){
   const i=CAMPAIGNS.indexOf(c), next=CAMPAIGNS[(i+1)%CAMPAIGNS.length];
   return `<div class="wrap" style="padding-top:34px"><a class="nv u" href="#/work">&larr; Work</a></div>
   <div class="bhd" style="padding-top:26px">
-    <div><p class="lb" style="margin-bottom:14px">${esc(c.disc)} &nbsp;&middot;&nbsp; ${c.year}</p>
+    <div><p class="lb" style="margin-bottom:14px">${esc(c.disc)} &nbsp;&middot;&nbsp; ${c.year}${c.concept?' &nbsp;&middot;&nbsp; <span class="tag">Concept</span>':''}</p>
       <h1 class="d">${esc(c.client)}</h1></div>
     <p class="soft" style="max-width:40ch;font-size:14px">${esc(c.note)}</p></div>
   <div class="face">

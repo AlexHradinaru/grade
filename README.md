@@ -38,7 +38,11 @@ Then open http://localhost:8000
 
 ## Note
 
-This is a work-in-progress portfolio site. The campaign client names
-(Maison Verde, Atelier Nord, Suisse Objet), the studio address and the contact
-email are **placeholders** for layout purposes — not real clients or contact
-details. Replace them before any commercial use.
+Work-in-progress portfolio site.
+
+All campaigns are marked **Concept** — self-initiated work made to demonstrate
+range, not client commissions. Gradé is not affiliated with, authorised by or
+endorsed by any brand shown.
+
+The studio address and contact email are also **placeholders**. Replace them
+before any commercial use.
