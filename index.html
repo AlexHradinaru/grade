@@ -112,15 +112,6 @@
   @media(max-width:900px){.proc{grid-template-columns:1fr 1fr}}
   @media(max-width:560px){.proc{grid-template-columns:1fr}}
 
-  /* engagements */
-  .eng{display:grid;grid-template-columns:repeat(3,1fr);gap:clamp(28px,4vw,64px)}
-  .eng .e{border-top:1px solid var(--ink);padding-top:26px;display:flex;flex-direction:column}
-  .eng h3{font-family:var(--d);font-weight:400;font-size:var(--fs-h3);margin-bottom:14px}
-  .eng .lead{color:var(--soft);font-size:15px;margin-bottom:20px}
-  .eng .typ{font-size:14px;color:var(--muted);margin-bottom:26px;line-height:1.7}
-  .eng .ft{margin-top:auto;display:flex;justify-content:space-between;align-items:baseline;gap:14px;
-    border-top:1px solid var(--hair);padding-top:18px}
-  @media(max-width:860px){.eng{grid-template-columns:1fr}}
 
   /* details */
   .det{max-width:900px;border-top:1px solid var(--line)}
@@ -153,6 +144,17 @@
   .fld label{font-family:var(--s);font-size:var(--fs-label);text-transform:uppercase;letter-spacing:var(--ls);color:var(--muted)}
   .fld input,.fld textarea,.fld select{border:0;border-bottom:1px solid var(--line);background:transparent;padding:12px 0;font-size:15px}
   .fld input:focus,.fld textarea:focus,.fld select:focus{outline:none;border-bottom-color:var(--ink)}
+  .survey{border:0;padding:0;margin:0 0 30px;min-width:0}
+  .survey legend{padding:0;margin-bottom:14px;font-family:var(--s);font-size:var(--fs-label);
+    text-transform:uppercase;letter-spacing:var(--ls);color:var(--muted)}
+  .opts{display:flex;flex-wrap:wrap;gap:8px}
+  .opt{position:relative;cursor:pointer}
+  .opt input{position:absolute;opacity:0;inset:0;width:100%;height:100%;margin:0;cursor:pointer}
+  .opt span{display:block;border:1px solid var(--line);padding:11px 16px;font-size:13px;letter-spacing:.01em;
+    color:var(--soft);transition:border-color .3s ease,background .3s ease,color .3s ease}
+  .opt:hover span{border-color:var(--ink)}
+  .opt input:checked + span{background:var(--ink);border-color:var(--ink);color:var(--white)}
+  .opt input:focus-visible + span{outline:2px solid var(--ink);outline-offset:2px}
   .fgrid{display:grid;grid-template-columns:1fr 1fr;gap:0 40px}
   .fgrid .full{grid-column:1/-1}
   .start{display:grid;grid-template-columns:1.3fr .8fr;gap:clamp(34px,7vw,110px);padding-bottom:clamp(70px,9vw,130px)}
@@ -187,7 +189,6 @@
       <button class="nv menu-btn" id="menuBtn">Menu</button>
       <a class="nv" href="#/work">Work</a>
       <a class="nv" href="#/process">Process</a>
-      <a class="nv" href="#/engagements">Engagements</a>
       <a class="nv" href="#/casting">Casting</a>
     </div>
     <a class="wm" href="#/">Grad&eacute;</a>
@@ -199,7 +200,7 @@
   <div class="mnav-top"><span class="wm">Grad&eacute;</span><button class="nv" id="mnavX">Close</button></div>
   <nav class="mnav-links">
     <a class="big" href="#/work">Work</a><a class="big" href="#/process">Process</a>
-    <a class="big" href="#/engagements">Engagements</a><a class="big" href="#/casting">Casting</a>
+    <a class="big" href="#/casting">Casting</a>
     <a class="big" href="#/start">Enquire</a>
   </nav>
   <div style="margin-top:auto"><span class="lb">hello@grade.studio &nbsp;&middot;&nbsp; New York</span></div>
@@ -216,7 +217,7 @@
     </div>
     <div><h5 class="lb">Studio</h5><ul class="lb">
       <li><a class="u" href="#/work">Work</a></li><li><a class="u" href="#/process">Process</a></li>
-      <li><a class="u" href="#/engagements">Engagements</a></li><li><a class="u" href="#/casting">Casting</a></li></ul></div>
+      <li><a class="u" href="#/casting">Casting</a></li></ul></div>
     <div><h5 class="lb">Disciplines</h5><ul class="lb">
       <li><a class="u" href="#/start">Apparel</a></li><li><a class="u" href="#/start">Jewellery</a></li>
       <li><a class="u" href="#/start">Beauty</a></li><li><a class="u" href="#/start">Lifestyle</a></li></ul></div>
@@ -291,17 +292,14 @@ const PROCESS=[
  {n:'IV',t:'Delivery',d:'Final imagery within five to seven days, cropped for product pages, paid social and print. Sooner when a date demands it.'}
 ];
 
-const ENGAGEMENTS=[
- {n:'Essential',lead:'A single piece, given a proper campaign.',typ:'One face, one direction. Suited to a launch, a hero product, or a first look at working together. Typically eight finished images.'},
- {n:'Studio',lead:'A collection, treated as one.',typ:'Several faces and settings, with every piece in the range held to the same light and language. Typically twenty-four finished images.'},
- {n:'Campaign',lead:'A season, art-directed.',typ:'Full creative direction across the collection, unlimited looks, priority delivery and a dedicated producer.'}
-];
+const SURVEY_NEEDS=['Product pages','Social content','A campaign','A lookbook','Paid ads','Something more creative'];
+const SURVEY_BUDGET=['Under $1,500','$1,500 \u2013 $4,000','$4,000 \u2013 $10,000','$10,000 and above','Not sure yet'];
 
 const DETAILS=[
  ['Do you need the physical product?','Rarely, and never in order to begin. Clear images of the piece are enough, and for most briefs that is the faster route — a small house should not be waiting on a courier to start its campaign. A sample is welcome where drape, scale or material must be exact, but it is a preference on our side, never a requirement on yours.'],
  ['How long does it take?','Five to seven days from an approved brief. Sooner when a date demands it — tell us when you write.'],
  ['What do we receive?','Retouched imagery at full resolution, with crops prepared for product pages, paid social and print.'],
- ['Who owns the imagery?','You do. Every engagement includes full commercial rights to the work we deliver.'],
+ ['Who owns the imagery?','You do. Every project includes full commercial rights to the work we deliver.'],
  ['Can we extend it later?','Yes, and most brands do. Once a direction exists, new colourways, crops and angles do not mean beginning again.']
 ];
 
@@ -314,9 +312,6 @@ const im=(src,alt,ar,second)=>`<div class="im"${ar?` style="aspect-ratio:${ar}"`
 
 const procHTML=()=>`<div class="proc">${PROCESS.map(s=>
   `<div class="st rv"><div class="n lb">${s.n}</div><h3>${esc(s.t)}</h3><p>${esc(s.d)}</p></div>`).join('')}</div>`;
-const engHTML=()=>`<div class="eng">${ENGAGEMENTS.map(e=>
-  `<div class="e rv"><h3>${esc(e.n)}</h3><p class="lead">${esc(e.lead)}</p><p class="typ">${esc(e.typ)}</p>
-    <div class="ft"><span class="lb">By enquiry</span><a class="nv u" href="#/start">Enquire</a></div></div>`).join('')}</div>`;
 const detHTML=()=>`<div class="det">${DETAILS.map(d=>
   `<details><summary>${esc(d[0])}</summary><div class="a">${esc(d[1])}</div></details>`).join('')}</div>`;
 
@@ -374,20 +369,15 @@ function homeView(){
   </section>
 
   <section class="blk wrap" style="border-top:1px solid var(--hair)">
-    <div class="hd rv"><p class="eye lb">Engagements</p><h2 class="d">Scaled to your <em>collection.</em></h2>
-      <p>Each engagement is quoted to the work in front of it, so a house with four pieces never subsidises one with forty.</p></div>
-    ${engHTML()}
-  </section>
-
-  <section class="blk wrap" style="border-top:1px solid var(--hair)">
     <div class="hd rv"><p class="eye lb">Details</p><h2 class="d">Good to <em>know.</em></h2></div>
     ${detHTML()}
   </section>
 
-  <section class="close">
-    <h2 class="d">Tell us what you <em>make.</em></h2>
-    <p>We will come back within a day with a direction and a quote.</p>
-    <a class="ln" href="#/start">Begin a project</a>
+  <section class="blk wrap" id="enquire" style="border-top:1px solid var(--hair)">
+    <div class="hd rv"><p class="eye lb">Begin a project</p>
+      <h2 class="d">Tell us what you <em>need.</em></h2>
+      <p>A quick survey, about a minute. Every project is quoted to the work in front of it, so a house with four pieces never subsidises one with forty. You will hear back within one working day.</p></div>
+    <div style="max-width:860px">${surveyForm()}</div>
   </section>`;
 }
 
@@ -404,19 +394,6 @@ function processView(){
   </section>
   <section class="close"><h2 class="d">Begin whenever you're <em>ready.</em></h2>
     <p>A short brief is enough to start.</p><a class="ln" href="#/start">Begin a project</a></section>`;
-}
-
-function engView(){
-  return `<div class="bhd"><h1 class="d">Engagements</h1><span class="lb">Quoted to the work</span></div>
-  <section class="blk wrap">
-    <div class="hd rv"><p class="eye lb">Scale</p>
-      <h2 class="d">We charge for the work, not the <em>day.</em></h2>
-      <p>A traditional shoot bills a day rate whether you have four pieces or forty. We quote to the collection in front of us, and come back within one working day.</p></div>
-    ${engHTML()}
-  </section>
-  <section class="blk wrap" style="border-top:1px solid var(--hair)">
-    <div class="hd rv"><p class="eye lb">Details</p><h2 class="d">Good to <em>know.</em></h2></div>${detHTML()}
-  </section>`;
 }
 
 function workView(){
@@ -486,31 +463,38 @@ function faceView(ref){
     <a class="ln" href="#/start">Begin a project</a></section>`;
 }
 
+function surveyForm(){
+  return `      <form id="briefForm">
+    <div class="fgrid">
+          <div class="fld"><label for="b1">Your name</label><input id="b1" required></div>
+          <div class="fld"><label for="b2">House or brand</label><input id="b2" required></div>
+          <div class="fld"><label for="b3">Email</label><input id="b3" type="email" required></div>
+          <div class="fld"><label for="b4">Website or Instagram</label><input id="b4"></div>
+        </div>
+        <fieldset class="survey">
+          <legend>What do you need?</legend>
+          <div class="opts">${SURVEY_NEEDS.map((o,i)=>`<label class="opt"><input type="checkbox" name="need" id="need${i}" value="${esc(o)}"><span>${esc(o)}</span></label>`).join('')}</div>
+        </fieldset>
+        <fieldset class="survey">
+          <legend>Roughly, what budget are you working with?</legend>
+          <div class="opts">${SURVEY_BUDGET.map((o,i)=>`<label class="opt"><input type="radio" name="budget" id="bud${i}" value="${esc(o)}"><span>${esc(o)}</span></label>`).join('')}</div>
+        </fieldset>
+        <div class="fld"><label for="b8">Your thoughts</label>
+          <textarea id="b8" name="thoughts" rows="5" placeholder="The mood you have in mind, where the imagery will live, any date you are working to."></textarea></div>
+        <button class="ln" type="submit" style="width:100%;margin-top:14px">Send</button>
+        <p style="margin-top:18px;font-size:13px;color:var(--muted)">
+          Your own product images are enough to begin. If a sample would serve the piece better, we will arrange it after the brief.</p>
+      </form>`;
+}
+
 function startView(){
   return `<div class="bhd"><h1 class="d">Begin a project</h1><span class="lb">A reply within one working day</span></div>
   <section class="blk wrap start">
     <div>
       <div class="hd rv" style="margin-bottom:44px;max-width:44ch">
         <h2 class="d" style="font-size:clamp(28px,3.4vw,46px)">Tell us what you <em>make.</em></h2>
-        <p>A few lines are enough. We will come back with a direction and a quote.</p></div>
-      <form id="briefForm">
-        <div class="fgrid">
-          <div class="fld"><label for="b1">Your name</label><input id="b1" required></div>
-          <div class="fld"><label for="b2">House or brand</label><input id="b2" required></div>
-          <div class="fld"><label for="b3">Email</label><input id="b3" type="email" required></div>
-          <div class="fld"><label for="b4">Website or Instagram</label><input id="b4"></div>
-          <div class="fld"><label for="b5">Discipline</label>
-            <select id="b5">${DISCIPLINES.map(d=>`<option>${esc(d.t)}</option>`).join('')}<option>Something else</option></select></div>
-          <div class="fld"><label for="b6">Engagement</label>
-            <select id="b6"><option>Not yet decided</option>${ENGAGEMENTS.map(e=>`<option>${esc(e.n)}</option>`).join('')}</select></div>
-          <div class="fld full"><label for="b7">The pieces</label><input id="b7" placeholder="Six styles, two colourways each"></div>
-          <div class="fld full"><label for="b8">Anything else</label>
-            <textarea id="b8" rows="5" placeholder="The mood you have in mind, where the imagery will live, any date you are working to."></textarea></div>
-        </div>
-        <button class="ln" type="submit" style="width:100%;margin-top:14px">Send</button>
-        <p style="margin-top:18px;font-size:13px;color:var(--muted)">
-          Your own product images are enough to begin. If a sample would serve the piece better, we will arrange it after the brief.</p>
-      </form>
+        <p>A quick survey &mdash; it takes about a minute. We will come back with a direction and a quote.</p></div>
+      ${surveyForm()}
     </div>
     <aside>
       <div class="box rv">
@@ -532,7 +516,7 @@ function parseHash(){const raw=location.hash.replace(/^#\/?/,'');return {parts:r
 function renderRoute(){
   const {parts}=parseHash(),v=document.getElementById('view');
   if(parts[0]==='casting') v.innerHTML=parts[1]?faceView(parts[1]):castingView();
-  else if(parts[0]==='engagements') v.innerHTML=engView();
+  else if(parts[0]==='engagements') v.innerHTML=startView();
   else if(parts[0]==='process') v.innerHTML=processView();
   else if(parts[0]==='work') v.innerHTML=parts[1]?campaignView(parts[1]):workView();
   else if(parts[0]==='start') v.innerHTML=startView();

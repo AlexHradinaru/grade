@@ -24,7 +24,8 @@ Everything you'd want to change sits at the top of the `<script>` block in `inde
 - `IMG` — file names for the hero, disciplines and casting portraits
 - `CAMPAIGNS` — campaign titles, years, notes and their shots
 - `FACES` — casting references and their looks
-- `DISCIPLINES`, `PROCESS`, `ENGAGEMENTS`, `DETAILS` — all site copy
+- `DISCIPLINES`, `PROCESS`, `DETAILS` — site copy
+- `SURVEY_NEEDS`, `SURVEY_BUDGET` — the options in the enquiry survey
 
 Colours and type sizes are CSS custom properties in `:root`.
 
