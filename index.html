@@ -99,10 +99,11 @@
 
   /* casting */
   .cast{display:grid;grid-template-columns:1fr 1.15fr;gap:clamp(34px,7vw,100px);align-items:center}
-  .cast .trio{display:grid;grid-template-columns:repeat(3,1fr);gap:var(--gap)}
+  .cast .trio{display:grid;grid-template-columns:repeat(4,1fr);gap:var(--gap)}
   .cast .trio .im{aspect-ratio:3/4}
   .cast .trio .cn{margin-top:10px}
   @media(max-width:900px){.cast{grid-template-columns:1fr}}
+  @media(max-width:560px){.cast .trio{grid-template-columns:repeat(2,1fr)}}
 
   /* process */
   .proc{display:grid;grid-template-columns:repeat(4,1fr);gap:clamp(24px,3.4vw,52px)}
@@ -129,6 +130,9 @@
   .bhd{display:flex;justify-content:space-between;align-items:flex-end;gap:24px;flex-wrap:wrap;
     padding:clamp(40px,7vw,90px) var(--pad) 26px;border-bottom:1px solid var(--hair)}
   .bhd h1{font-size:var(--fs-h2)}
+  .grid4{display:grid;grid-template-columns:repeat(4,1fr);gap:var(--gap);padding:26px var(--pad) clamp(70px,9vw,130px)}
+  .grid4 .im{aspect-ratio:3/4}
+  @media(max-width:900px){.grid4{grid-template-columns:1fr 1fr}}
   .grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:var(--gap);padding:26px var(--pad) clamp(70px,9vw,130px)}
   .grid3 .im{aspect-ratio:3/4}
   @media(max-width:900px){.grid3{grid-template-columns:1fr 1fr}}
@@ -297,6 +301,9 @@ const IMG={
 
 /* Campaigns — each shot with one face, in one location, in one palette */
 const CAMPAIGNS=[
+  {slug:'argile', concept:true, client:'Argile', year:'2026', disc:'Home & lifestyle',
+   note:'Terracotta, unglazed ceramic and washed linen. One face, one colour, four unhurried frames.',
+   shots:['ar_1.jpg','ar_2.jpg','ar_3.jpg','ar_4.jpg'], face:'04'},
   {slug:'maison-verde', concept:true, client:'Maison Verde', year:'2026', disc:'Spring ready-to-wear',
    note:'Four looks in a single room of winter light. One face, one palette, ivory throughout.',
    shots:['ca_1.jpg','ca_2.jpg','ca_3.jpg','ca_4.jpg'], face:'01'},
@@ -322,7 +329,10 @@ const FACES=[
    looks:[{s:'cb_1.jpg'},{s:'cb_2.jpg'},{s:'cb_3.jpg'},{s:'cb_4.jpg'},{s:'mr_1.jpg'},{s:'mr_3.jpg'}]},
   {ref:'03', portrait:IMG.faceC, alt:'Casting reference 03',
    suited:'Beauty · Skincare · Fine jewellery',
-   looks:[{s:IMG.beauty},{s:'cc_1.jpg'},{s:'cc_3.jpg'},{s:'cc_4.jpg'}]}
+   looks:[{s:IMG.beauty},{s:'cc_1.jpg'},{s:'cc_3.jpg'},{s:'cc_4.jpg'}]},
+  {ref:'04', portrait:'img_8.jpg', alt:'Casting reference 04',
+   suited:'Lifestyle · Interiors · Tailoring',
+   looks:[{s:'ar_1.jpg'},{s:'ar_3.jpg'},{s:'ar_4.jpg'},{s:'ar_2.jpg'}]}
 ];
 
 const CREDS=['Casting handled in-house','Art direction included','Full commercial rights','Delivered in days'];
@@ -410,7 +420,7 @@ function homeView(){
     <div class="hd rv" style="display:flex;justify-content:space-between;align-items:flex-end;max-width:none;gap:24px;flex-wrap:wrap">
       <div><p class="eye lb">Selected work</p><h2 class="d">Recent <em>campaigns.</em></h2></div>
       <a class="nv u" href="#/work">All work</a></div>
-    <div class="grid3" style="padding:0">${CAMPAIGNS.map(c=>
+    <div class="grid4" style="padding:0">${CAMPAIGNS.slice(0,4).map(c=>
       `<a class="sw rv" href="#/work/${c.slug}">${im(c.shots[0],c.client+' — '+c.disc,'3/4',c.shots[2])}
         <div style="display:flex;justify-content:space-between;align-items:baseline;gap:10px;margin-top:12px">
           <span class="d" style="font-size:20px">${esc(c.client)}</span><span class="lb">${c.year}</span></div>
@@ -485,7 +495,7 @@ function castingView(){
     <div><p class="lb" style="margin-bottom:14px">Chosen for the brief, never from a menu</p>
       <h1 class="d">Casting</h1></div>
     <span class="lb">Selected references</span></div>
-  <div class="grid3">
+  <div class="grid4">
     ${FACES.map(f=>`<a class="sw rv" href="#/casting/${f.ref}">${im(f.portrait,f.alt,'3/4',f.looks[0].s)}
       <div style="display:flex;justify-content:space-between;align-items:baseline;gap:10px;margin-top:12px">
         <span class="d" style="font-size:20px">Reference ${f.ref}</span><span class="lb">${f.looks.length} looks</span></div>
