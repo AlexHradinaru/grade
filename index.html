@@ -16,6 +16,7 @@
   body{margin:0;background:var(--white);color:var(--ink);font-family:var(--s);
     font-size:var(--fs-body);line-height:1.6;-webkit-font-smoothing:antialiased;overflow-x:hidden}
   img{display:block;max-width:100%}
+  [hidden]{display:none!important}
   a{color:inherit;text-decoration:none}
   button{font:inherit;color:inherit;background:none;border:0;padding:0;cursor:pointer}
   input,textarea,select{font:inherit;color:inherit}
@@ -144,9 +145,6 @@
   .fld label{font-family:var(--s);font-size:var(--fs-label);text-transform:uppercase;letter-spacing:var(--ls);color:var(--muted)}
   .fld input,.fld textarea,.fld select{border:0;border-bottom:1px solid var(--line);background:transparent;padding:12px 0;font-size:15px}
   .fld input:focus,.fld textarea:focus,.fld select:focus{outline:none;border-bottom-color:var(--ink)}
-  .survey{border:0;padding:0;margin:0 0 30px;min-width:0}
-  .survey legend{padding:0;margin-bottom:14px;font-family:var(--s);font-size:var(--fs-label);
-    text-transform:uppercase;letter-spacing:var(--ls);color:var(--muted)}
   .opts{display:flex;flex-wrap:wrap;gap:8px}
   .opt{position:relative;cursor:pointer}
   .opt input{position:absolute;opacity:0;inset:0;width:100%;height:100%;margin:0;cursor:pointer}
@@ -155,6 +153,57 @@
   .opt:hover span{border-color:var(--ink)}
   .opt input:checked + span{background:var(--ink);border-color:var(--ink);color:var(--white)}
   .opt input:focus-visible + span{outline:2px solid var(--ink);outline-offset:2px}
+  /* ---- stepped enquiry survey ---- */
+  .sv{max-width:860px}
+  .sv-top{display:flex;align-items:center;gap:18px;margin-bottom:36px}
+  .sv-count{white-space:nowrap}
+  .sv-count b{color:var(--ink);font-weight:500}
+  .sv-bar{flex:1;height:1px;background:var(--line);position:relative}
+  .sv-bar i{position:absolute;left:0;top:-.5px;height:2px;background:var(--ink);width:25%;
+    transition:width .6s cubic-bezier(.4,0,.2,1)}
+  .sv-stage{min-height:310px}
+  .sv-step{animation:svIn .55s cubic-bezier(.2,.7,.2,1) both}
+  .sv-step.back{animation-name:svInBack}
+  @keyframes svIn{from{opacity:0;transform:translateX(28px)}to{opacity:1;transform:none}}
+  @keyframes svInBack{from{opacity:0;transform:translateX(-28px)}to{opacity:1;transform:none}}
+  .sv-q{font-family:var(--d);font-weight:300;font-size:clamp(28px,3.4vw,42px);line-height:1.05;margin-bottom:10px;outline:none}
+  .sv-sub{color:var(--soft);font-size:14px;margin-bottom:30px;max-width:52ch}
+  .sv-read{min-height:70px;display:flex;align-items:flex-end;margin-bottom:20px}
+  .sv-val{font-family:var(--d);font-weight:300;font-size:clamp(36px,5.4vw,60px);line-height:1;color:var(--ink)}
+  .sv-val.idle{color:var(--muted)}
+  .sv-val.pop{animation:svPop .45s cubic-bezier(.2,.7,.2,1)}
+  @keyframes svPop{from{opacity:.15;transform:translateY(10px)}to{opacity:1;transform:none}}
+  .sv-range{--thumb:18px;--f:.5;position:relative;padding-bottom:30px;transition:opacity .35s ease}
+  .sv-range input[type=range]{-webkit-appearance:none;appearance:none;display:block;width:100%;height:36px;
+    margin:0;background:transparent;cursor:pointer}
+  .sv-range input[type=range]::-webkit-slider-runnable-track{height:2px;
+    background:linear-gradient(to right,var(--ink) calc(var(--thumb)/2 + (100% - var(--thumb))*var(--f)),var(--line) 0)}
+  .sv-range input[type=range]::-moz-range-track{height:2px;background:var(--line)}
+  .sv-range input[type=range]::-moz-range-progress{height:2px;background:var(--ink)}
+  .sv-range input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:var(--thumb);height:var(--thumb);
+    margin-top:-8px;background:var(--ink);border:0;border-radius:0;transition:transform .25s ease}
+  .sv-range input[type=range]::-moz-range-thumb{width:var(--thumb);height:var(--thumb);background:var(--ink);border:0;border-radius:0}
+  .sv-range input[type=range]:hover::-webkit-slider-thumb{transform:scale(1.18)}
+  .sv-range input[type=range]:focus-visible::-webkit-slider-thumb{outline:2px solid var(--ink);outline-offset:3px}
+  .sv-range input[type=range]:focus-visible::-moz-range-thumb{outline:2px solid var(--ink);outline-offset:3px}
+  .sv-range.idle input[type=range]{opacity:.5}
+  .sv-range.off{opacity:.28;pointer-events:none}
+  .sv-ticks{position:absolute;left:0;right:0;top:24px;height:8px;pointer-events:none}
+  .sv-ticks i{position:absolute;top:0;width:1px;height:8px;background:var(--line);transition:background .3s ease;
+    left:calc(var(--thumb)/2 + (100% - var(--thumb))*var(--k))}
+  .sv-ticks i.on{background:var(--ink)}
+  .sv-ends{display:flex;justify-content:space-between;margin:-10px 0 26px;font-family:var(--s);font-size:var(--fs-label);
+    text-transform:uppercase;letter-spacing:var(--ls);color:var(--muted)}
+  .sv-unsure{display:inline-block}
+  .sv-summary{margin-bottom:26px;padding:14px 0;border-top:1px solid var(--hair);border-bottom:1px solid var(--hair);
+    font-size:13px;color:var(--soft);line-height:1.7}
+  .sv-summary b{font-weight:500;color:var(--ink)}
+  .sv-nav{display:flex;align-items:center;gap:28px;margin-top:34px}
+  .sv-nav .ln{min-width:190px;text-align:center}
+  .sv-foot{margin-top:22px;font-size:13px;color:var(--muted);max-width:56ch}
+  .sv-done{animation:svIn .6s cubic-bezier(.2,.7,.2,1) both}
+  @media(max-width:560px){.sv-nav{flex-wrap:wrap}.sv-nav .ln{flex:1}}
+  @media (prefers-reduced-motion:reduce){.sv-step,.sv-val.pop,.sv-done{animation:none!important}.sv-bar i{transition:none}}
   .fgrid{display:grid;grid-template-columns:1fr 1fr;gap:0 40px}
   .fgrid .full{grid-column:1/-1}
   .start{display:grid;grid-template-columns:1.3fr .8fr;gap:clamp(34px,7vw,110px);padding-bottom:clamp(70px,9vw,130px)}
@@ -293,7 +342,7 @@ const PROCESS=[
 ];
 
 const SURVEY_NEEDS=['Product pages','Social content','A campaign','A lookbook','Paid ads','Something more creative'];
-const SURVEY_BUDGET=['Under $1,500','$1,500 \u2013 $4,000','$4,000 \u2013 $10,000','$10,000 and above','Not sure yet'];
+const SURVEY_BUDGET=['Under $300','$300 – $600','$600 – $1,000','$1,000 – $2,500','$2,500 – $5,000','$5,000 and above'];
 
 const DETAILS=[
  ['Do you need the physical product?','Rarely, and never in order to begin. Clear images of the piece are enough, and for most briefs that is the faster route — a small house should not be waiting on a courier to start its campaign. A sample is welcome where drape, scale or material must be exact, but it is a preference on our side, never a requirement on yours.'],
@@ -464,27 +513,51 @@ function faceView(ref){
 }
 
 function surveyForm(){
-  return `      <form id="briefForm">
-    <div class="fgrid">
-          <div class="fld"><label for="b1">Your name</label><input id="b1" required></div>
-          <div class="fld"><label for="b2">House or brand</label><input id="b2" required></div>
-          <div class="fld"><label for="b3">Email</label><input id="b3" type="email" required></div>
+  const n=SURVEY_BUDGET.length;
+  const ticks=SURVEY_BUDGET.map((_,k)=>`<i style="--k:${(k/(n-1)).toFixed(4)}"></i>`).join('');
+  return `<form id="briefForm" class="sv" data-step="0" data-last="3">
+    <div class="sv-top"><span class="lb sv-count">Step <b>1</b> of 4</span><div class="sv-bar"><i></i></div></div>
+    <div class="sv-stage">
+      <section class="sv-step" data-i="0">
+        <h3 class="sv-q" tabindex="-1">What do you need?</h3>
+        <p class="sv-sub">Pick as many as apply.</p>
+        <div class="opts">${SURVEY_NEEDS.map((o,i)=>`<label class="opt"><input type="checkbox" name="need" id="need${i}" value="${esc(o)}"><span>${esc(o)}</span></label>`).join('')}</div>
+      </section>
+      <section class="sv-step" data-i="1" hidden>
+        <h3 class="sv-q" tabindex="-1">What range suits you?</h3>
+        <p class="sv-sub">A rough idea is plenty. Whatever you set, we will scope the work to it.</p>
+        <div class="sv-read" aria-live="polite"><span class="sv-val idle">Slide to set a range</span></div>
+        <div class="sv-range idle" style="--n:${n}">
+          <input type="range" id="budget" name="budget" min="0" max="${n-1}" step="1" value="${Math.floor((n-1)/2)}" aria-label="Budget range">
+          <div class="sv-ticks">${ticks}</div>
+        </div>
+        <div class="sv-ends"><span>${esc(SURVEY_BUDGET[0])}</span><span>${esc(SURVEY_BUDGET[n-1])}</span></div>
+        <label class="opt sv-unsure"><input type="checkbox" id="budgetUnsure" name="budgetUnsure"><span>I would rather you advise</span></label>
+      </section>
+      <section class="sv-step" data-i="2" hidden>
+        <h3 class="sv-q" tabindex="-1">Anything you would like us to know?</h3>
+        <p class="sv-sub">The mood, where the imagery will live, a date you are working to. Or nothing at all.</p>
+        <div class="fld"><label for="b8">Your thoughts</label>
+          <textarea id="b8" name="thoughts" rows="5" placeholder="Soft light, launching in spring, mostly for Instagram."></textarea></div>
+      </section>
+      <section class="sv-step" data-i="3" hidden>
+        <h3 class="sv-q" tabindex="-1">Where should we reply?</h3>
+        <p class="sv-summary" aria-live="polite"></p>
+        <div class="fgrid">
+          <div class="fld"><label for="b1">Your name</label><input id="b1"></div>
+          <div class="fld"><label for="b2">House or brand</label><input id="b2"></div>
+          <div class="fld"><label for="b3">Email</label><input id="b3" type="email"></div>
           <div class="fld"><label for="b4">Website or Instagram</label><input id="b4"></div>
         </div>
-        <fieldset class="survey">
-          <legend>What do you need?</legend>
-          <div class="opts">${SURVEY_NEEDS.map((o,i)=>`<label class="opt"><input type="checkbox" name="need" id="need${i}" value="${esc(o)}"><span>${esc(o)}</span></label>`).join('')}</div>
-        </fieldset>
-        <fieldset class="survey">
-          <legend>Roughly, what budget are you working with?</legend>
-          <div class="opts">${SURVEY_BUDGET.map((o,i)=>`<label class="opt"><input type="radio" name="budget" id="bud${i}" value="${esc(o)}"><span>${esc(o)}</span></label>`).join('')}</div>
-        </fieldset>
-        <div class="fld"><label for="b8">Your thoughts</label>
-          <textarea id="b8" name="thoughts" rows="5" placeholder="The mood you have in mind, where the imagery will live, any date you are working to."></textarea></div>
-        <button class="ln" type="submit" style="width:100%;margin-top:14px">Send</button>
-        <p style="margin-top:18px;font-size:13px;color:var(--muted)">
-          Your own product images are enough to begin. If a sample would serve the piece better, we will arrange it after the brief.</p>
-      </form>`;
+      </section>
+    </div>
+    <div class="sv-nav">
+      <button type="button" class="nv u" data-sv="back" hidden>Back</button>
+      <button type="button" class="ln" data-sv="next">Continue</button>
+      <button type="submit" class="ln" data-sv="send" hidden>Send</button>
+    </div>
+    <p class="sv-foot">Your own product images are enough to begin. If a sample would serve the piece better, we will arrange it after the brief.</p>
+  </form>`;
 }
 
 function startView(){
@@ -550,11 +623,74 @@ document.getElementById('menuBtn').onclick=()=>{document.getElementById('mnav').
 document.getElementById('mnavX').onclick=closeAll;
 document.getElementById('mnav').addEventListener('click',e=>{if(e.target.tagName==='A')closeAll()});
 
+/* ---------- stepped survey behaviour ---------- */
+const SVN=SURVEY_BUDGET.length;
+function svNeeds(f){return [...f.querySelectorAll('input[name=need]:checked')].map(i=>i.value)}
+function svBudgetText(f){
+  if(f.querySelector('#budgetUnsure').checked) return 'We will advise';
+  return f.dataset.touched==='1' ? SURVEY_BUDGET[+f.querySelector('#budget').value] : '';
+}
+function svBudget(f){
+  const r=f.querySelector('#budget'), box=f.querySelector('.sv-range'), val=f.querySelector('.sv-val');
+  const unsure=f.querySelector('#budgetUnsure').checked, touched=f.dataset.touched==='1', i=+r.value;
+  r.disabled=unsure;
+  box.style.setProperty('--f',(i/(SVN-1)).toFixed(4));
+  box.classList.toggle('off',unsure);
+  box.classList.toggle('idle',!touched&&!unsure);
+  f.querySelectorAll('.sv-ticks i').forEach((t,k)=>t.classList.toggle('on',touched&&!unsure&&k<=i));
+  r.setAttribute('aria-valuetext',touched?SURVEY_BUDGET[i]:'not set');
+  const txt=svBudgetText(f)||'Slide to set a range';
+  if(val.textContent!==txt){
+    val.textContent=txt; val.classList.toggle('idle',!touched&&!unsure);
+    val.classList.remove('pop'); void val.offsetWidth; val.classList.add('pop');
+  }
+}
+function svGo(f,to,dir){
+  const last=+f.dataset.last; to=Math.max(0,Math.min(last,to));
+  f.querySelectorAll('.sv-step').forEach(st=>{
+    const on=+st.dataset.i===to;
+    st.hidden=!on; st.classList.toggle('back',on&&dir==='back');
+  });
+  f.dataset.step=to;
+  f.querySelector('.sv-count').innerHTML='Step <b>'+(to+1)+'</b> of '+(last+1);
+  f.querySelector('.sv-bar i').style.width=((to+1)/(last+1)*100)+'%';
+  f.querySelector('[data-sv=back]').hidden=(to===0);
+  f.querySelector('[data-sv=next]').hidden=(to===last);
+  f.querySelector('[data-sv=send]').hidden=(to!==last);
+  // only the final step has required fields, so hidden steps can never block a submit
+  ['b1','b2','b3'].forEach(id=>f.querySelector('#'+id).required=(to===last));
+  if(to===last){
+    const needs=svNeeds(f), bud=svBudgetText(f);
+    f.querySelector('.sv-summary').innerHTML=
+      '<b>Needs</b> &nbsp;'+(needs.length?needs.map(esc).join(', '):'To be discussed')+
+      '<br><b>Range</b> &nbsp;'+(bud?esc(bud):'To be discussed');
+  }
+  const h=f.querySelector('.sv-step:not([hidden]) .sv-q'); if(h) h.focus({preventScroll:true});
+  const top=f.getBoundingClientRect().top;
+  if(top<90) window.scrollBy({top:top-110,behavior:matchMedia('(prefers-reduced-motion:reduce)').matches?'auto':'smooth'});
+}
+document.addEventListener('click',e=>{
+  const b=e.target.closest('[data-sv=next],[data-sv=back]'); if(!b) return;
+  const f=b.closest('form'), cur=+f.dataset.step, fwd=b.dataset.sv==='next';
+  svGo(f,cur+(fwd?1:-1),fwd?'fwd':'back');
+});
+document.addEventListener('input',e=>{
+  if(e.target.id==='budget'){const f=e.target.form; f.dataset.touched='1'; svBudget(f);}
+});
+document.addEventListener('change',e=>{
+  if(e.target.id==='budgetUnsure') svBudget(e.target.form);
+});
+
 document.addEventListener('submit',e=>{
   if(e.target.id==='briefForm'){
     e.preventDefault();
-    e.target.innerHTML=`<div style="border-top:1px solid var(--ink);padding-top:26px">
+    const f=e.target, last=+f.dataset.last;
+    if(+f.dataset.step<last){ svGo(f,+f.dataset.step+1,'fwd'); return; }
+    const needs=svNeeds(f), bud=svBudgetText(f);
+    const recap=[needs.length?needs.join(', '):'', bud].filter(Boolean).map(esc).join(' &nbsp;&middot;&nbsp; ');
+    f.innerHTML=`<div class="sv-done" style="border-top:1px solid var(--ink);padding-top:26px">
       <h3 class="d" style="font-size:28px;margin-bottom:12px">Received, with thanks.</h3>
+      ${recap?`<p class="lb" style="margin-bottom:12px">${recap}</p>`:''}
       <p class="soft" style="font-size:14px;max-width:44ch">We will write within one working day with a direction and a quote.</p></div>`;
   }
   if(e.target.id==='newsForm'){
