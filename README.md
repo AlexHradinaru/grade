@@ -13,6 +13,7 @@ hash-based routing. Fonts load from Google Fonts; everything else ships with the
 index.html     the whole site (markup, styles, data, routing)
 img_*.jpg      hero, disciplines and casting portraits
 ca_*.jpg       campaign — Maison Verde
+sc_*.jpg       campaign — 6CRAYON (client work)
 cb_*.jpg       campaign — Atelier Nord
 cc_*.jpg       campaign — Suisse Objet
 ```
@@ -41,8 +42,8 @@ Then open http://localhost:8000
 
 Work-in-progress portfolio site.
 
-All campaigns are marked **Concept** — self-initiated work made to demonstrate
-range, not client commissions. Gradé is not affiliated with, authorised by or
+Campaigns marked **Concept** are self-initiated work made to demonstrate range.
+6CRAYON is commissioned client work. Gradé is not affiliated with, authorised by or
 endorsed by any brand shown.
 
 The studio address and contact email are also **placeholders**. Replace them
