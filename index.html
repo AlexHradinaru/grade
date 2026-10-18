@@ -210,9 +210,15 @@
   @media (prefers-reduced-motion:reduce){.sv-step,.sv-val.pop,.sv-done{animation:none!important}.sv-bar i{transition:none}}
   .fgrid{display:grid;grid-template-columns:1fr 1fr;gap:0 40px}
   .fgrid .full{grid-column:1/-1}
-  .start{display:grid;grid-template-columns:1.3fr .8fr;gap:clamp(34px,7vw,110px);padding-bottom:clamp(70px,9vw,130px)}
+  .start{display:block;padding-top:clamp(40px,5vw,72px);padding-bottom:clamp(70px,9vw,130px)}
+  .start-main{max-width:920px}
+  .start .sv{max-width:920px}
+  .start-meta{display:grid;grid-template-columns:repeat(3,1fr);gap:clamp(24px,4vw,64px);margin-top:clamp(56px,7vw,96px);
+    padding-top:26px;border-top:1px solid var(--hair);font-size:13px;line-height:1.7;color:var(--muted)}
+  .start-meta .lb{display:block;margin-bottom:8px}
+  .start-meta p{margin:0;max-width:34ch}
   .box{border-top:1px solid var(--ink);padding-top:24px}
-  @media(max-width:900px){.fgrid{grid-template-columns:1fr}.start{grid-template-columns:1fr}}
+  @media(max-width:900px){.fgrid{grid-template-columns:1fr}.start-meta{grid-template-columns:1fr;gap:22px}}
 
   /* closing + footer */
   .close{text-align:center;padding:clamp(90px,13vw,190px) var(--pad);border-top:1px solid var(--hair)}
@@ -303,22 +309,28 @@ const IMG={
 const CAMPAIGNS=[
   {slug:'6crayon', client:'6CRAYON', year:'2026', disc:'Outerwear',
    note:'A quilted wrap coat in deep black cotton, closed with two silver lobster clasps. One face, one grey room, nine frames from collar to hem.',
-   shots:['sc_1.jpg','sc_2.jpg','sc_3.jpg','sc_4.jpg','sc_5.jpg','sc_6.jpg','sc_7.jpg','sc_8.jpg','sc_9.jpg'], face:'05'},
+   shots:['sc_1.jpg','sc_2.jpg','sc_3.jpg','sc_4.jpg','sc_5.jpg','sc_6.jpg','sc_7.jpg','sc_8.jpg','sc_9.jpg'], face:'05',
+   product:['p_sc_1.jpg','p_sc_2.jpg','p_sc_3.jpg','p_sc_4.jpg']},
   {slug:'argile', concept:true, client:'Argile', year:'2026', disc:'Home & lifestyle',
    note:'Terracotta, unglazed ceramic and heavyweight cashmere. One face, one colour, four unhurried frames.',
-   shots:['ar_1.jpg','ar_2.jpg','ar_3.jpg','ar_4.jpg'], face:'04'},
+   shots:['ar_1.jpg','ar_2.jpg','ar_3.jpg','ar_4.jpg'], face:'04',
+   product:['p_ar_1.jpg','p_ar_2.jpg']},
   {slug:'maison-verde', concept:true, client:'Maison Verde', year:'2026', disc:'Spring ready-to-wear',
    note:'Four looks in a single room of winter light. One face, one palette, ivory throughout.',
-   shots:['ca_1.jpg','ca_2.jpg','ca_3.jpg','ca_4.jpg'], face:'01'},
+   shots:['ca_1.jpg','ca_2.jpg','ca_3.jpg','ca_4.jpg'], face:'01',
+   product:['p_ca_1.jpg','p_ca_2.jpg']},
   {slug:'atelier-nord', concept:true, client:'Atelier Nord', year:'2026', disc:'Knitwear',
    note:'One bright room of cream plaster and linen. Four looks, one face, oatmeal throughout.',
-   shots:['cb_1.jpg','cb_2.jpg','cb_3.jpg','cb_4.jpg'], face:'02'},
+   shots:['cb_1.jpg','cb_2.jpg','cb_3.jpg','cb_4.jpg'], face:'02',
+   product:['p_cb_1.jpg','p_cb_2.jpg']},
   {slug:'mara', client:'Mara Beauty', year:'2026', disc:'Beauty & skincare', concept:true,
    note:'One serum, one face, one dusty rose wall. Four frames shot against the same light.',
-   shots:['mr_1.jpg','mr_2.jpg','mr_3.jpg','mr_4.jpg'], face:'02'},
+   shots:['mr_1.jpg','mr_2.jpg','mr_3.jpg','mr_4.jpg'], face:'02',
+   product:['p_mr_1.jpg','p_mr_2.jpg']},
   {slug:'suisse-objet', concept:true, client:'Suisse Objet', year:'2025', disc:'Fine jewellery',
    note:'Gold on cream silk against a seamless warm ground, lit high and bright so the metal carries.',
-   shots:['cc_1.jpg','cc_2.jpg','cc_3.jpg','cc_4.jpg'], face:'03'}
+   shots:['cc_1.jpg','cc_2.jpg','cc_3.jpg','cc_4.jpg'], face:'03',
+   product:['p_cc_1.jpg','p_cc_2.jpg']}
 ];
 const campBySlug=s=>CAMPAIGNS.find(c=>c.slug===s);
 
@@ -488,6 +500,12 @@ function campaignView(slug){
       <img class="a" src="${s}" alt="${esc(c.client)} look ${n+1}" loading="lazy"></div>
       <p class="lb" style="margin-top:10px">Look ${String(n+1).padStart(2,'0')}</p></div>`).join('')}
   </div>
+  ${c.product?`<div class="wrap" style="padding-top:8px"><p class="eye lb">The product</p></div>
+  <div class="face">
+    ${c.product.map((s,n)=>`<div class="sw rv"><div class="im" style="aspect-ratio:3/4">
+      <img class="a" src="${s}" alt="${esc(c.client)} product ${n+1}" loading="lazy"></div>
+      <p class="lb" style="margin-top:10px">Product ${String(n+1).padStart(2,'0')}</p></div>`).join('')}
+  </div>`:''}
   <div class="wrap" style="display:flex;justify-content:space-between;gap:20px;flex-wrap:wrap;
        border-top:1px solid var(--hair);padding-top:26px">
     <span class="lb">Cast from reference ${c.face}</span>
@@ -579,24 +597,17 @@ function surveyForm(){
 function startView(){
   return `<div class="bhd"><h1 class="d">Begin a project</h1><span class="lb">A reply within one working day</span></div>
   <section class="blk wrap start">
-    <div>
-      <div class="hd rv" style="margin-bottom:44px;max-width:44ch">
-        <h2 class="d" style="font-size:clamp(28px,3.4vw,46px)">Tell us what you <em>make.</em></h2>
+    <div class="start-main">
+      <div class="hd rv" style="margin-bottom:40px;max-width:48ch">
+        <h2 class="d" style="font-size:clamp(30px,3.6vw,50px)">Tell us what you <em>make.</em></h2>
         <p>A quick survey &mdash; it takes about a minute. We will come back with a direction and a quote.</p></div>
       ${surveyForm()}
     </div>
-    <aside>
-      <div class="box rv">
-        <h4 class="lb" style="margin-bottom:18px">Casting</h4>
-        <p class="soft" style="font-size:14px">Leave it with us — we will propose the face that suits the brand. If you would rather choose, <a class="u" href="#/casting">view the casting</a> and mention a reference above.</p>
-      </div>
-      <div class="box rv" style="margin-top:40px">
-        <h4 class="lb" style="margin-bottom:18px">What follows</h4>
-        <ol style="padding-left:18px;line-height:2.4;font-size:13px;color:var(--muted)">
-          <li>We read the brief</li><li>A direction and a quote</li>
-          <li>Casting and production</li><li>Imagery in five to seven days</li></ol>
-      </div>
-    </aside>
+    <div class="start-meta rv">
+      <p><span class="lb">Casting</span>Leave it with us and we will propose the face. Or <a class="u" href="#/casting">view the casting</a> and mention a reference.</p>
+      <p><span class="lb">What follows</span>We read the brief, send a direction and a quote, then cast and produce. Imagery in five to seven days.</p>
+      <p><span class="lb">Reply</span>Within one working day.</p>
+    </div>
   </section>`;
 }
 
