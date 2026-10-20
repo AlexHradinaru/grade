@@ -205,6 +205,8 @@
   .sv-nav{display:flex;align-items:center;gap:28px;margin-top:34px}
   .sv-nav .ln{min-width:190px;text-align:center}
   .sv-foot{margin-top:22px;font-size:13px;color:var(--muted);max-width:56ch}
+  .hp{position:absolute;left:-9999px;top:auto;width:1px;height:1px;overflow:hidden}
+  .sv-err{margin-top:18px;color:#8a2b1f;text-transform:none;letter-spacing:0;font-size:13px}
   .sv-done{animation:svIn .6s cubic-bezier(.2,.7,.2,1) both}
   @media(max-width:560px){.sv-nav{flex-wrap:wrap}.sv-nav .ln{flex:1}}
   @media (prefers-reduced-motion:reduce){.sv-step,.sv-val.pop,.sv-done{animation:none!important}.sv-bar i{transition:none}}
@@ -262,7 +264,7 @@
     <a class="big" href="#/casting">Casting</a>
     <a class="big" href="#/start">Enquire</a>
   </nav>
-  <div style="margin-top:auto"><span class="lb">hello@grade.studio &nbsp;&middot;&nbsp; New York &nbsp;&middot;&nbsp; Miami</span></div>
+  <div style="margin-top:auto"><span class="lb">hello@gradestudio.us &nbsp;&middot;&nbsp; New York &nbsp;&middot;&nbsp; Miami</span></div>
 </div>
 
 <main id="view"></main>
@@ -272,7 +274,7 @@
     <div>
       <div class="wm" style="margin-bottom:22px">Grad&eacute;</div>
       <p class="soft" style="max-width:34ch;font-size:14px">An image studio creating on-model campaigns for fashion, beauty and lifestyle brands.</p>
-      <address class="lb" style="margin-top:20px">hello@grade.studio<br>New York &nbsp;&middot;&nbsp; Miami</address>
+      <address class="lb" style="margin-top:20px">hello@gradestudio.us<br>New York &nbsp;&middot;&nbsp; Miami</address>
     </div>
     <div><h5 class="lb">Studio</h5><ul class="lb">
       <li><a class="u" href="#/work">Work</a></li><li><a class="u" href="#/process">Process</a></li>
@@ -578,11 +580,13 @@ function surveyForm(){
         <h3 class="sv-q" tabindex="-1">Where should we reply?</h3>
         <p class="sv-summary" aria-live="polite"></p>
         <div class="fgrid">
-          <div class="fld"><label for="b1">Your name</label><input id="b1"></div>
-          <div class="fld"><label for="b2">House or brand</label><input id="b2"></div>
-          <div class="fld"><label for="b3">Email</label><input id="b3" type="email"></div>
-          <div class="fld"><label for="b4">Website or Instagram</label><input id="b4"></div>
+          <div class="fld"><label for="b1">Your name</label><input id="b1" name="name" autocomplete="name"></div>
+          <div class="fld"><label for="b2">House or brand</label><input id="b2" name="brand" autocomplete="organization"></div>
+          <div class="fld"><label for="b3">Email</label><input id="b3" name="email" type="email" autocomplete="email"></div>
+          <div class="fld"><label for="b4">Website or Instagram</label><input id="b4" name="website"></div>
         </div>
+        <div class="hp" aria-hidden="true"><label>Company<input name="company" tabindex="-1" autocomplete="off"></label></div>
+        <p class="sv-err lb" id="svErr" role="alert" hidden></p>
       </section>
     </div>
     <div class="sv-nav">
@@ -708,12 +712,31 @@ document.addEventListener('change',e=>{
   if(e.target.id==='budgetUnsure') svBudget(e.target.form);
 });
 
-document.addEventListener('submit',e=>{
+const FORMS_URL='https://forms.gradestudio.us/';
+async function sendForm(payload){
+  const r=await fetch(FORMS_URL,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)});
+  if(!r.ok) throw new Error('send '+r.status);
+  const j=await r.json(); if(!j.ok) throw new Error(j.error||'send');
+}
+
+document.addEventListener('submit',async e=>{
   if(e.target.id==='briefForm'){
     e.preventDefault();
     const f=e.target, last=+f.dataset.last;
     if(+f.dataset.step<last){ svGo(f,+f.dataset.step+1,'fwd'); return; }
     const needs=svNeeds(f), bud=svBudgetText(f);
+    const err=f.querySelector('#svErr'), btn=f.querySelector('[data-sv=send]');
+    err.hidden=true; btn.disabled=true; const label=btn.textContent; btn.textContent='Sending\u2026';
+    try{
+      await sendForm({type:'enquiry', needs, budget:bud, thoughts:f.querySelector('#b8').value,
+        name:f.querySelector('#b1').value, brand:f.querySelector('#b2').value,
+        email:f.querySelector('#b3').value, website:f.querySelector('#b4').value,
+        company:f.querySelector('[name=company]').value});
+    }catch(_){
+      btn.disabled=false; btn.textContent=label;
+      err.textContent='That did not send. Please try again, or write to us directly at hello@gradestudio.us.';
+      err.hidden=false; return;
+    }
     const recap=[needs.length?needs.join(', '):'', bud].filter(Boolean).map(esc).join(' &nbsp;&middot;&nbsp; ');
     f.innerHTML=`<div class="sv-done" style="border-top:1px solid var(--ink);padding-top:26px">
       <h3 class="d" style="font-size:28px;margin-bottom:12px">Received, with thanks.</h3>
@@ -722,8 +745,10 @@ document.addEventListener('submit',e=>{
   }
   if(e.target.id==='newsForm'){
     e.preventDefault();
-    document.getElementById('newsMsg').textContent='Thank you.';
-    document.getElementById('newsEmail').value='';
+    const em=document.getElementById('newsEmail'), msg=document.getElementById('newsMsg');
+    msg.textContent='Sending\u2026';
+    try{ await sendForm({type:'newsletter', email:em.value, company:''}); msg.textContent='Thank you.'; em.value=''; }
+    catch(_){ msg.textContent='That did not send. Please try again.'; }
   }
 });
 addEventListener('keydown',e=>{if(e.key==='Escape')closeAll()});
